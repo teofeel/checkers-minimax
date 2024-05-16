@@ -71,20 +71,26 @@ class Board:
                     return row_temp, column_temp
             
             return None, None
+    
+
+    def get_pieces_attack_position(self, player_color):
+        available_pieces = []
+
+
+        for row in range(ROWS):
+            for column in (COLS):
+                pass
+
         
-    def check_draw_possible_mustattack(self, player_pos, possible_move1_pos, possible_move2_pos):
-        player_pos_col, player_pos_row = player_pos[0], player_pos[1]
-        possible_move1_col, possible_move1_row = possible_move1_pos[0], possible_move1_pos[1]
-        possible_move2_col, possible_move2_row = possible_move2_pos[0], possible_move2_pos[1]
-        
-        if MUST_ATTACK and possible_move1_pos!=(None, None) and possible_move2_pos!=(None,None):
+    def check_draw_possible_mustattack(self, player_pos_row, possible_move1_row, possible_move2_row):
+        if MUST_ATTACK and possible_move1_row!=None and possible_move2_row!=None:
             if ((abs(player_pos_row-possible_move1_row)>1 or abs(player_pos_row-possible_move2_row)>1) and
                 (abs(player_pos_row-possible_move1_row)==1 or abs(player_pos_row-possible_move2_row)==1)):
             
-                if abs(player_pos_row-possible_move1_row)==1: possible_move1_pos = (None, None)
-                else: possible_move2_pos = (None, None)
+                if abs(player_pos_row-possible_move1_row)==1: possible_move1_row = None
+                else: possible_move2_row = None
         
-        return possible_move1_pos, possible_move2_pos
+        return possible_move1_row, possible_move2_row
         
 
     def selected_piece(self,window, position_col, position_row, player):
@@ -99,8 +105,7 @@ class Board:
             can_move_row1, can_move_col1 = self.check_draw_possible_move(can_move_row, can_move_col1, self.board[position_row][position_col], (position_col, position_row))
             can_move_row2, can_move_col2 = self.check_draw_possible_move(can_move_row, can_move_col2, self.board[position_row][position_col], (position_col, position_row))
             
-            (can_move_col1, can_move_row1), (can_move_col2, can_move_row2) = self.check_draw_possible_mustattack((position_col,position_row), (can_move_col1, can_move_row1), 
-                                                                                                                (can_move_col2, can_move_row2))
+            can_move_row1, can_move_row2 = self.check_draw_possible_mustattack(position_row, can_move_row1, can_move_row2)
             
             if (can_move_row1!=None and can_move_col1!=None):
                 possible_moves.append((can_move_row1, can_move_col1))
@@ -139,11 +144,7 @@ class Board:
 
         if piece_is_queen:
             if piece_color == BLACK: self.black_piece_queens-=1
-            else: self.red_piece_queens-=1
-        
-
-        
-            
+            else: self.red_piece_queens-=1       
 
     def move_piece(self,window, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:

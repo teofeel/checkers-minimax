@@ -10,4 +10,4 @@ BLACK = (0,0,0)
 RED = (255,0,0)
 GREEN = (100,200,50)
 
-MUST_ATTACK = False
+MUST_ATTACK = True
