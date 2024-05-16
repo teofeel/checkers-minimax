@@ -1,74 +1,63 @@
+import pygame
+from components.constants import *
+from components.Board import Board
+import sys
 
-PvP_PvC = ''
-OBAVEZNO_UKLANJANJE = False
-TEZINA_IGRE = ''
+pygame.init()
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+board = Board()
 
-def meni():
-    global PvP_PvC
-    while True:
-        print('Vrsta igre')
-        print('1. Player vs Player')
-        print('2. Player vs Computer')
-        print('3. Izlazak iz igre')
-        value = input('>>> ')
-
-        if value=='1':
-            PvP_PvC = 'PVP'
-            pravila_igre_meni()
-        elif value=='2':
-            PvP_PvC = 'PVC'
-            pravila_igre_meni()
-        elif value=='3':
-            exit()
-
-def pravila_igre_meni():
-    global OBAVEZNO_UKLANJANJE
-    while True:
-        print('Pravila igre')
-        print('1. Obavezno uklanjanje')
-        print('2. Slobodno kretanje')
-        print('3. Izlazak iz igre')
-        value = input('>>> ')
-
-        if value=='1':
-            OBAVEZNO_UKLANJANJE = True
-            if PvP_PvC == 'PVC':
-                tezina_igre()
-            igra()
-            
-        elif value=='2':
-            if PvP_PvC == 'PVC':
-                tezina_igre()
-            igra()
-        elif value=='3':
-            exit()
-
-def tezina_igre():
-    global TEZINA_IGRE
-    while True:
-        print('Tezina igre')
-        print('1. Easy')
-        print('2. Medium')
-        print('3. Hard')
-        print('4. Izlazak iz igre')
-        value = input('>>> ')
-
-        if value=='1':
-            TEZINA_IGRE = 'EASY'
-            igra()
-        elif value=='2':
-            TEZINA_IGRE = 'MEDIUM'
-            igra()
-        elif value=='3':
-            TEZINA_IGRE = 'HARD'
-            igra()
-        elif value=='4':
-            exit()
-
-def igra():
-    print(PvP_PvC, OBAVEZNO_UKLANJANJE, TEZINA_IGRE)
-
-if __name__ == '__main__':
-    meni()
+def start_menu():
     pass
 
+def main():
+    play = True
+    player_turn = BLACK
+    board.draw_positions(WINDOW)
+    board.draw_pieces_board_beggining(WINDOW)
+    pygame.display.update()
+
+    while play:
+        pygame.time.Clock().tick(60)
+
+        player_made_move = False
+        while not player_made_move:
+            for event in pygame.event.get():
+                if event.type==pygame.MOUSEBUTTONDOWN:
+                    piece_pos = pygame.mouse.get_pos()
+
+                    possible_moves = board.selected_piece(WINDOW, piece_pos, player_turn)
+                    if(possible_moves == False): continue
+                    
+                    waiting = True
+                    while waiting:
+                        for event_waiting in pygame.event.get():
+                            if event_waiting.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
+                            if event_waiting.type == pygame.MOUSEBUTTONDOWN:
+                                moved = board.move_piece(WINDOW, possible_moves, piece_pos, pygame.mouse.get_pos())
+                                if moved: 
+                                    player_made_move = True
+                                    
+                                waiting = False        
+                                        
+
+                if event.type==pygame.QUIT:
+                    player_made_move = True
+                    play=False
+
+            board.draw_positions(WINDOW)
+            board.draw_pieces_board(WINDOW)
+            pygame.display.update()
+
+        if player_turn==BLACK: player_turn=RED
+        else: player_turn=BLACK
+
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == '__main__':
+    
+    main()
