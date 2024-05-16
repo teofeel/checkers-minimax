@@ -1,6 +1,7 @@
 import pygame
 from .Piece import Piece
 from .constants import *
+import math
 
 class Board:
     def __init__(self):
@@ -52,48 +53,108 @@ class Board:
                     piece.draw_circle(window)
 
 
-    def check_draw_possible_move(self, row, column, window):
-        if(not self.out_of_bounds(row,column) and self.board[row][column]==0):
-            pygame.draw.rect(window, GREEN, (column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+    def check_draw_possible_move(self, row, column, player, player_pos):
+        player_pos_col, player_pos_row = player_pos
+        if not player.is_queen:
+            if(not self.out_of_bounds(row,column) and self.board[row][column]==0):
+                return row, column
 
-    def selected_piece(self,window, position, player):
-        position_col, position_row = position[0]//SQUARE_SIZE, position[1]//SQUARE_SIZE
+            elif(not self.out_of_bounds(row, column) and self.board[row][column]!=0 and self.board[row][column].color!=player.color):
+                row_temp = row+player.direction
 
-        if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player 
-           and not self.board[position_row][position_col].is_queen):
+                if column-player_pos_col>0:
+                    column_temp=column+abs(player.direction)
+                elif column-player_pos_col<0:
+                    column_temp=column-abs(player.direction)
+
+                if(not self.out_of_bounds(row_temp,column_temp) and self.board[row_temp][column_temp]==0):
+                    return row_temp, column_temp
             
+            return None, None
+        
+    def check_draw_possible_mustattack(self, player_pos, possible_move1_pos, possible_move2_pos):
+        player_pos_col, player_pos_row = player_pos[0], player_pos[1]
+        possible_move1_col, possible_move1_row = possible_move1_pos[0], possible_move1_pos[1]
+        possible_move2_col, possible_move2_row = possible_move2_pos[0], possible_move2_pos[1]
+        
+        if MUST_ATTACK and possible_move1_pos!=(None, None) and possible_move2_pos!=(None,None):
+            if ((abs(player_pos_row-possible_move1_row)>1 or abs(player_pos_row-possible_move2_row)>1) and
+                (abs(player_pos_row-possible_move1_row)==1 or abs(player_pos_row-possible_move2_row)==1)):
+            
+                if abs(player_pos_row-possible_move1_row)==1: possible_move1_pos = (None, None)
+                else: possible_move2_pos = (None, None)
+        
+        return possible_move1_pos, possible_move2_pos
+        
+
+    def selected_piece(self,window, position_col, position_row, player):
+        if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player ):
+            possible_moves = []
+
             can_move_row = self.board[position_row][position_col].direction+position_row
 
             can_move_col1 = position_col+1
             can_move_col2 = position_col-1
             
-            self.check_draw_possible_move(can_move_row, can_move_col1, window)
-            self.check_draw_possible_move(can_move_row, can_move_col2, window)    
+            can_move_row1, can_move_col1 = self.check_draw_possible_move(can_move_row, can_move_col1, self.board[position_row][position_col], (position_col, position_row))
+            can_move_row2, can_move_col2 = self.check_draw_possible_move(can_move_row, can_move_col2, self.board[position_row][position_col], (position_col, position_row))
+            
+            (can_move_col1, can_move_row1), (can_move_col2, can_move_row2) = self.check_draw_possible_mustattack((position_col,position_row), (can_move_col1, can_move_row1), 
+                                                                                                                (can_move_col2, can_move_row2))
+            
+            if (can_move_row1!=None and can_move_col1!=None):
+                possible_moves.append((can_move_row1, can_move_col1))
+                pygame.draw.rect(window, GREEN, (can_move_col1 * SQUARE_SIZE, can_move_row1 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            
+            if (can_move_row2!=None and can_move_col2!=None):
+                possible_moves.append((can_move_row2, can_move_col2))
+                pygame.draw.rect(window, GREEN, (can_move_col2 * SQUARE_SIZE, can_move_row2 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
             pygame.display.update()
 
-            possible_move1 = (can_move_row, can_move_col1)
-            possible_move2 = (can_move_row, can_move_col2)
-            
-            return possible_move1, possible_move2
-            
-        elif(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player 
-           and self.board[position_row][position_col].is_queen):
-            pass
-
+            return possible_moves
         else:
             return False
 
+    def remove_piece(self, player, move_col, move_row, piece_col, piece_row):
+        if move_row>piece_row:
+            remove_piece_row = move_row-1
+            if move_col>piece_col:
+                remove_piece_col = move_col-1
+            else:
+                remove_piece_col = move_col+1
+        else:
+            remove_piece_row = piece_row-1
+            if move_col>piece_col:
+                remove_piece_col = move_col-1
+            else:
+                remove_piece_col = move_col+1
 
-    def move_piece(self,window, possible_moves, piece_pos, move_pos):
-        piece_col, piece_row = piece_pos[0]//SQUARE_SIZE, piece_pos[1]//SQUARE_SIZE
-        move_col, move_row = move_pos[0]//SQUARE_SIZE, move_pos[1]//SQUARE_SIZE
+        piece_color = self.board[remove_piece_row][remove_piece_col].color
+        piece_is_queen = self.board[remove_piece_row][remove_piece_col].is_queen
+        self.board[remove_piece_row][remove_piece_col] = 0
 
+        if piece_color == BLACK: self.black_pieces_left-=1
+        else: self.red_pieces_left-=1
+
+        if piece_is_queen:
+            if piece_color == BLACK: self.black_piece_queens-=1
+            else: self.red_piece_queens-=1
+        
+
+        
+            
+
+    def move_piece(self,window, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:
             possible_move_row = move[0]
             possible_move_col = move[1]
             
             if((not self.out_of_bounds(possible_move_row, possible_move_col)) and self.board[possible_move_row][possible_move_col]==0 
                and (possible_move_row==move_row and possible_move_col==move_col)):
+                
+                if abs(move_row-piece_row)==2:
+                    self.remove_piece(self.board[piece_row][piece_col], move_col, move_row, piece_col, piece_row)
                 
                 self.board[move_row][move_col] = self.board[piece_row][piece_col]
                 self.board[move_row][move_col].column = move_col
@@ -108,8 +169,8 @@ class Board:
             
             elif((self.out_of_bounds(possible_move_row, possible_move_col) or self.board[possible_move_row][possible_move_col]!=0 )
                and (possible_move_row==move_row and possible_move_col==move_col)):
-                
                 return False
+            
 
     
 

@@ -3,7 +3,7 @@ from components.constants import *
 from components.Board import Board
 import sys
 
-pygame.init()
+
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 board = Board()
 
@@ -24,9 +24,9 @@ def main():
         while not player_made_move:
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
-                    piece_pos = pygame.mouse.get_pos()
+                    piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
 
-                    possible_moves = board.selected_piece(WINDOW, piece_pos, player_turn)
+                    possible_moves = board.selected_piece(WINDOW, piece_pos_col, piece_pos_row, player_turn)
                     if(possible_moves == False): continue
                     
                     waiting = True
@@ -36,10 +36,11 @@ def main():
                                 pygame.quit()
                                 sys.exit()
                             if event_waiting.type == pygame.MOUSEBUTTONDOWN:
-                                moved = board.move_piece(WINDOW, possible_moves, piece_pos, pygame.mouse.get_pos())
+                                move_pos_col, move_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
+                                moved = board.move_piece(WINDOW, possible_moves, piece_pos_col, piece_pos_row, move_pos_col, move_pos_row)
                                 if moved: 
                                     player_made_move = True
-                                    
+
                                 waiting = False        
                                         
 
@@ -59,5 +60,6 @@ def main():
 
 
 if __name__ == '__main__':
-    
+    pygame.init()
+
     main()
