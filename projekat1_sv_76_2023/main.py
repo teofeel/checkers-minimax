@@ -52,6 +52,11 @@ def main():
             board.draw_pieces_board(WINDOW)
             pygame.display.update()
 
+        if board.black_pieces_left==0 or board.red_pieces_left==0:
+            pygame.quit()
+            sys.exit()
+
+            
         if player_turn==BLACK: player_turn=RED
         else: player_turn=BLACK
 
