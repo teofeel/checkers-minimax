@@ -5,7 +5,7 @@ import math
 
 class Board:
     def __init__(self):
-        self.board=[]
+        self.board=[] # PREBACITI OVO U HASHMAPU
 
         self.black_pieces_left = 12
         self.red_pieces_left = 12
@@ -19,7 +19,7 @@ class Board:
         if(row>=0 and col>=0 and row<=7 and col<=7):
             return False
         return True
-
+    
     def draw_positions(self, window):
         window.fill(DARK_BROWN)
         for col in range(COLS):
@@ -44,7 +44,6 @@ class Board:
                 piece = self.board[row][column]
                 if piece!=0:
                     piece.draw_circle(window)
-
     def draw_pieces_board(self, window):
         for row in range(ROWS):
             for column in range(COLS):
@@ -53,29 +52,43 @@ class Board:
                     piece.draw_circle(window)
 
 
+
     def check_draw_possible_move(self, row, column, player, player_pos):
         player_pos_col, player_pos_row = player_pos
-        if not player.is_queen:
-            if(not self.out_of_bounds(row,column) and self.board[row][column]==0):
-                return row, column
 
-            elif(not self.out_of_bounds(row, column) and self.board[row][column]!=0 and self.board[row][column].color!=player.color):
+        if(not self.out_of_bounds(row,column) and self.board[row][column]==0):
+            return row, column
+        
+        elif(not self.out_of_bounds(row, column) and self.board[row][column]!=0 and self.board[row][column].color!=player.color):
+            ##### ovde greksa kad je kraljica ######
+            if not player.is_queen:
                 row_temp = row+player.direction
-
                 if column-player_pos_col>0:
                     column_temp=column+abs(player.direction)
                 elif column-player_pos_col<0:
                     column_temp=column-abs(player.direction)
+            else:
+                if row>player_pos_row:
+                    row_temp = row+1
+                else:
+                    row_temp = row-1
 
-                if(not self.out_of_bounds(row_temp,column_temp) and self.board[row_temp][column_temp]==0):
-                    return row_temp, column_temp
-            
-            return None, None
+                if column-player_pos_col>0:
+                    column_temp=column+1
+                elif column-player_pos_col<0:
+                    column_temp=column-1
+
+            if(not self.out_of_bounds(row_temp,column_temp) and self.board[row_temp][column_temp]==0):
+                return row_temp, column_temp
+        
+        return None, None
+
+        
     
 
     def get_pieces_attack_position(self, player_color):
+        ######### NAPISATI OVO DNS ##############
         available_pieces = []
-
 
         for row in range(ROWS):
             for column in (COLS):
@@ -94,7 +107,7 @@ class Board:
         
 
     def selected_piece(self,window, position_col, position_row, player):
-        if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player ):
+        if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player):
             possible_moves = []
 
             can_move_row = self.board[position_row][position_col].direction+position_row
@@ -104,8 +117,16 @@ class Board:
             
             can_move_row1, can_move_col1 = self.check_draw_possible_move(can_move_row, can_move_col1, self.board[position_row][position_col], (position_col, position_row))
             can_move_row2, can_move_col2 = self.check_draw_possible_move(can_move_row, can_move_col2, self.board[position_row][position_col], (position_col, position_row))
-            
-            can_move_row1, can_move_row2 = self.check_draw_possible_mustattack(position_row, can_move_row1, can_move_row2)
+
+            if self.board[position_row][position_col].is_queen:
+                can_move_row_queen = self.board[position_row][position_col].direction*(-1)+position_row
+                can_move_col1_queen = position_col+1
+                can_move_col2_queen = position_col-1
+
+                can_move_row3, can_move_col3 = self.check_draw_possible_move(can_move_row_queen, can_move_col1_queen, self.board[position_row][position_col], (position_col, position_row))
+                can_move_row4, can_move_col4 = self.check_draw_possible_move(can_move_row_queen, can_move_col2_queen, self.board[position_row][position_col], (position_col, position_row))
+
+            #can_move_row1, can_move_row2 = self.check_draw_possible_mustattack(position_row, can_move_row1, can_move_row2)
             
             if (can_move_row1!=None and can_move_col1!=None):
                 possible_moves.append((can_move_row1, can_move_col1))
@@ -114,6 +135,14 @@ class Board:
             if (can_move_row2!=None and can_move_col2!=None):
                 possible_moves.append((can_move_row2, can_move_col2))
                 pygame.draw.rect(window, GREEN, (can_move_col2 * SQUARE_SIZE, can_move_row2 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+            if (self.board[position_row][position_col].is_queen and can_move_row3!=None and can_move_col3!=None):
+                possible_moves.append((can_move_row3, can_move_col3))
+                pygame.draw.rect(window, GREEN, (can_move_col3 * SQUARE_SIZE, can_move_row3 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+            if (self.board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None):
+                possible_moves.append((can_move_row4, can_move_col4))
+                pygame.draw.rect(window, GREEN, (can_move_col4 * SQUARE_SIZE, can_move_row4 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
             pygame.display.update()
 
@@ -165,6 +194,13 @@ class Board:
 
                 self.board[move_row][move_col].draw_circle(window)
                 pygame.display.update()
+
+                ######## OVO PREGLEDATI ########
+                if(self.board[move_row][move_col].color == BLACK and move_row==0):
+                    self.board[move_row][move_col].is_queen = True
+                elif(self.board[move_row][move_col].color == RED and move_row==ROWS-1):
+                    self.board[move_row][move_col].is_queen = True
+                ################################
 
                 return True
             
