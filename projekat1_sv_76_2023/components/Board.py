@@ -79,10 +79,7 @@ class Board:
             if(not self.out_of_bounds(row_temp,column_temp) and self.board[row_temp][column_temp]==0):
                 return row_temp, column_temp
         
-        return None, None
-
-        
-    
+        return None, None     
 
     def get_pieces_attack_position(self, player_color):
         ######### NAPISATI OVO DNS ##############
@@ -117,21 +114,32 @@ class Board:
                         available_pieces.append((row, column))
                     
         return available_pieces
-                
 
         
-    def check_draw_possible_mustattack(self, player_pos_row, possible_move1_row, possible_move2_row):
-        if MUST_ATTACK and possible_move1_row!=None and possible_move2_row!=None:
-            if ((abs(player_pos_row-possible_move1_row)>1 or abs(player_pos_row-possible_move2_row)>1) and
-                (abs(player_pos_row-possible_move1_row)==1 or abs(player_pos_row-possible_move2_row)==1)):
-            
-                if abs(player_pos_row-possible_move1_row)==1: possible_move1_row = None
-                else: possible_move2_row = None
-        
-        return possible_move1_row, possible_move2_row
+    def check_draw_possible_mustattack(self, player, possible_moves):
+        if MUST_ATTACK:
+            save_moves = []
+
+            for move in possible_moves:
+                
+                move_row = move[0]
+                move_column = move[1]
+                
+                if move_row == None or move_column == None: continue
+
+                if abs(move_row-player.row)>1 and abs(move_column-player.column)>1:
+                    save_moves.append(move)
+
+        if len(save_moves)>0: return save_moves        
+        return possible_moves
+
         
 
     def selected_piece(self,window, position_col, position_row, player):
+        if MUST_ATTACK: 
+            pieces_attack_position = self.get_pieces_attack_position(player)
+            if len(pieces_attack_position)>0 and not (position_row ,position_col) in pieces_attack_position: return []
+
         if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player):
             possible_moves = []
 
@@ -140,8 +148,14 @@ class Board:
             can_move_col1 = position_col+1
             can_move_col2 = position_col-1
             
+            moves_check_mustattack = []
+
             can_move_row1, can_move_col1 = self.check_draw_possible_move(can_move_row, can_move_col1, self.board[position_row][position_col])
+            moves_check_mustattack.append((can_move_row1, can_move_col1))
+
             can_move_row2, can_move_col2 = self.check_draw_possible_move(can_move_row, can_move_col2, self.board[position_row][position_col])
+            moves_check_mustattack.append((can_move_row2, can_move_col2))
+
 
             if self.board[position_row][position_col].is_queen:
                 can_move_row_queen = self.board[position_row][position_col].direction*(-1)+position_row
@@ -149,23 +163,28 @@ class Board:
                 can_move_col2_queen = position_col-1
 
                 can_move_row3, can_move_col3 = self.check_draw_possible_move(can_move_row_queen, can_move_col1_queen, self.board[position_row][position_col])
-                can_move_row4, can_move_col4 = self.check_draw_possible_move(can_move_row_queen, can_move_col2_queen, self.board[position_row][position_col])
+                moves_check_mustattack.append((can_move_row3, can_move_col3 ))
 
-            #can_move_row1, can_move_row2 = self.check_draw_possible_mustattack(position_row, can_move_row1, can_move_row2)
+                can_move_row4, can_move_col4 = self.check_draw_possible_move(can_move_row_queen, can_move_col2_queen, self.board[position_row][position_col])
+                moves_check_mustattack.append((can_move_row4, can_move_col4))
+                
+
             
-            if (can_move_row1!=None and can_move_col1!=None):
+            moves_check_mustattack = self.check_draw_possible_mustattack(self.board[position_row][position_col], moves_check_mustattack)
+
+            if (can_move_row1!=None and can_move_col1!=None and (can_move_row1, can_move_col1) in moves_check_mustattack):
                 possible_moves.append((can_move_row1, can_move_col1))
                 pygame.draw.rect(window, GREEN, (can_move_col1 * SQUARE_SIZE, can_move_row1 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
             
-            if (can_move_row2!=None and can_move_col2!=None):
+            if (can_move_row2!=None and can_move_col2!=None and (can_move_row2, can_move_col2) in moves_check_mustattack):
                 possible_moves.append((can_move_row2, can_move_col2))
                 pygame.draw.rect(window, GREEN, (can_move_col2 * SQUARE_SIZE, can_move_row2 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-            if (self.board[position_row][position_col].is_queen and can_move_row3!=None and can_move_col3!=None):
+            if (self.board[position_row][position_col].is_queen and can_move_row3!=None and can_move_col3!=None and (can_move_row3, can_move_col3) in moves_check_mustattack):
                 possible_moves.append((can_move_row3, can_move_col3))
                 pygame.draw.rect(window, GREEN, (can_move_col3 * SQUARE_SIZE, can_move_row3 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-            if (self.board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None):
+            if (self.board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None and (can_move_row4, can_move_col4) in moves_check_mustattack):
                 possible_moves.append((can_move_row4, can_move_col4))
                 pygame.draw.rect(window, GREEN, (can_move_col4 * SQUARE_SIZE, can_move_row4 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 

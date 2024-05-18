@@ -20,8 +20,6 @@ def main():
     while play:
         pygame.time.Clock().tick(60)
 
-        
-
         player_made_move = False
         while not player_made_move:
             for event in pygame.event.get():
