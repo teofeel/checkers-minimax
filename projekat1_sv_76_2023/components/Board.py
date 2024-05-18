@@ -24,7 +24,8 @@ class Board:
         window.fill(DARK_BROWN)
         for col in range(COLS):
             for row in range(col%2, ROWS, 2):
-                pygame.draw.rect(window, LIGHT_BROWN,(col*SQUARE_SIZE, row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))        
+                pygame.draw.rect(window, LIGHT_BROWN,(col*SQUARE_SIZE, row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))   
+
     def draw_pieces_board_beggining(self, window):
         for row in range(ROWS):
             self.board.append([])
@@ -38,18 +39,39 @@ class Board:
                         self.board[row].append(0)
                 else:
                     self.board[row].append(0)
+
         for row in range(ROWS):
             self.board.append([])
             for column in range(COLS):
                 piece = self.board[row][column]
                 if piece!=0:
                     piece.draw_circle(window)
+
     def draw_pieces_board(self, window):
         for row in range(ROWS):
             for column in range(COLS):
                 piece = self.board[row][column]
                 if piece!=0:
                     piece.draw_circle(window)
+
+    def draw_suggested_pieces_board(self, window, color):
+        pieces_in_position = self.get_pieces_attack_position(color)
+
+        if MUST_ATTACK and len(pieces_in_position)>0:
+            
+            for row in range(ROWS):
+                for col in range(COLS):
+                    if (row,col) in pieces_in_position and self.board[row][col]!=0:
+                        self.board[row][col].draw_suggested(window) 
+
+        else:
+
+            for row in range(ROWS):
+                for col in range(COLS):
+
+                    if self.board[row][col]!=0 and self.board[row][col].color==color and len(self.selected_piece(col, row, color))>0:
+                        self.board[row][col].draw_suggested(window) 
+                    
 
 
     def get_num_pieces_attack_positions(self, color):

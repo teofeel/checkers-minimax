@@ -11,9 +11,16 @@ board = Board()
 def start_menu():
     pass
 
+def update_display(color):
+    board.draw_positions(WINDOW)
+    board.draw_suggested_pieces_board(WINDOW, color)
+    board.draw_pieces_board(WINDOW)
+    pygame.display.update()
+
 def main():
     play = True
     player_turn = BLACK
+    
     board.draw_positions(WINDOW)
     board.draw_pieces_board_beggining(WINDOW)
     pygame.display.update()
@@ -21,7 +28,9 @@ def main():
     while play:
         pygame.time.Clock().tick(60)
 
-        minimax(board, None, None, None, None, None)
+        update_display(player_turn)
+
+        #minimax(board, None, None, None, None, None)
 
         player_made_move = False
         while not player_made_move: # and player_turn==BLACK
@@ -58,13 +67,11 @@ def main():
                 if event.type==pygame.QUIT:
                     player_made_move = True
                     play=False
-        
+
+            update_display(player_turn)
+
         if player_turn == RED:
             print('red')
-        
-        board.draw_positions(WINDOW)
-        board.draw_pieces_board(WINDOW)
-        pygame.display.update()
 
         if board.black_pieces_left==0 or board.red_pieces_left==0:
             pygame.quit()
