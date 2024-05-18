@@ -97,21 +97,32 @@ class Board:
 
                 if not self.out_of_bounds(row_temp, column_temp1) and (self.board[row_temp][column_temp1]!=0 and 
                                                 self.board[row_temp][column_temp1].color != piece_analizing.color): 
-                    available_pieces.append((row, column))
+                    
+                    if not self.out_of_bounds(row_temp+piece_analizing.direction, column_temp1-1) and self.board[row_temp+piece_analizing.direction][column_temp1-1]==0:
+                        available_pieces.append((row, column))
                 
                 if not self.out_of_bounds(row_temp, column_temp2) and (self.board[row_temp][column_temp2 ]!=0 
-                                        and self.board[row_temp][column_temp2 ].color != piece_analizing.color):
-                    available_pieces.append((row, column))
+                                        and self.board[row_temp][column_temp2].color != piece_analizing.color):
+                    
+                    if not self.out_of_bounds(row_temp+piece_analizing.direction, column_temp2+1) and self.board[row_temp+piece_analizing.direction][column_temp2+1]==0:
+                        available_pieces.append((row, column))
 
                 if piece_analizing.is_queen:
                     row_queen = row + piece_analizing.direction*-1
                     if not self.out_of_bounds(row_queen, column_temp1) and (self.board[row_queen][column_temp1]!=0 and 
                                                 self.board[row_queen][column_temp1].color != piece_analizing.color): 
-                        available_pieces.append((row, column))
+                        
+                        if not self.out_of_bounds(row_queen+piece_analizing.direction*-1, column_temp1-1) and self.board[row_temp+piece_analizing.direction*-1][column_temp1-1]==0:
+                            available_pieces.append((row, column))
+
                 
                     if not self.out_of_bounds(row_queen, column_temp2) and (self.board[row_queen][column_temp2 ]!=0 
                                             and self.board[row_queen][column_temp2 ].color != piece_analizing.color):
-                        available_pieces.append((row, column))
+                        
+                        if not self.out_of_bounds(row_queen+piece_analizing.direction*-1, column_temp2+1) and self.board[row_temp+piece_analizing.direction*-1][column_temp2+1]==0:
+                            available_pieces.append((row, column))
+
+                    
                     
         return available_pieces
 
@@ -130,7 +141,7 @@ class Board:
                 if abs(move_row-player.row)>1 and abs(move_column-player.column)>1:
                     save_moves.append(move)
 
-        if len(save_moves)>0: return save_moves        
+            if len(save_moves)>0: return save_moves        
         return possible_moves
 
         
