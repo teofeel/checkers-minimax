@@ -28,6 +28,10 @@ def main():
 
                     possible_moves = board.selected_piece(WINDOW, piece_pos_col, piece_pos_row, player_turn)
                     if(possible_moves == False): continue
+
+                    for move in possible_moves:
+                        pygame.draw.rect(WINDOW, GREEN, (move[1] * SQUARE_SIZE, move[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                    pygame.display.update()
                     
                     waiting = True
 
@@ -41,7 +45,7 @@ def main():
                             if event_waiting.type == pygame.MOUSEBUTTONDOWN:
                                 move_pos_col, move_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
                                 
-                                moved = board.move_piece(WINDOW, possible_moves, piece_pos_col, piece_pos_row, move_pos_col, move_pos_row)
+                                moved = board.move_piece(possible_moves, piece_pos_col, piece_pos_row, move_pos_col, move_pos_row)
 
                                 if moved: 
                                     player_made_move = True

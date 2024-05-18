@@ -121,9 +121,7 @@ class Board:
                         
                         if not self.out_of_bounds(row_queen+piece_analizing.direction*-1, column_temp2+1) and self.board[row_temp+piece_analizing.direction*-1][column_temp2+1]==0:
                             available_pieces.append((row, column))
-
-                    
-                    
+                                          
         return available_pieces
 
         
@@ -178,26 +176,20 @@ class Board:
 
                 can_move_row4, can_move_col4 = self.check_draw_possible_move(can_move_row_queen, can_move_col2_queen, self.board[position_row][position_col])
                 moves_check_mustattack.append((can_move_row4, can_move_col4))
-                
-
             
             moves_check_mustattack = self.check_draw_possible_mustattack(self.board[position_row][position_col], moves_check_mustattack)
 
             if (can_move_row1!=None and can_move_col1!=None and (can_move_row1, can_move_col1) in moves_check_mustattack):
                 possible_moves.append((can_move_row1, can_move_col1))
-                pygame.draw.rect(window, GREEN, (can_move_col1 * SQUARE_SIZE, can_move_row1 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
             
             if (can_move_row2!=None and can_move_col2!=None and (can_move_row2, can_move_col2) in moves_check_mustattack):
                 possible_moves.append((can_move_row2, can_move_col2))
-                pygame.draw.rect(window, GREEN, (can_move_col2 * SQUARE_SIZE, can_move_row2 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
             if (self.board[position_row][position_col].is_queen and can_move_row3!=None and can_move_col3!=None and (can_move_row3, can_move_col3) in moves_check_mustattack):
                 possible_moves.append((can_move_row3, can_move_col3))
-                pygame.draw.rect(window, GREEN, (can_move_col3 * SQUARE_SIZE, can_move_row3 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
             if (self.board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None and (can_move_row4, can_move_col4) in moves_check_mustattack):
                 possible_moves.append((can_move_row4, can_move_col4))
-                pygame.draw.rect(window, GREEN, (can_move_col4 * SQUARE_SIZE, can_move_row4 * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
             pygame.display.update()
 
@@ -230,7 +222,7 @@ class Board:
             if piece_color == BLACK: self.black_piece_queens-=1
             else: self.red_piece_queens-=1       
 
-    def move_piece(self,window, possible_moves, piece_col, piece_row, move_col, move_row):
+    def move_piece(self, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:
             possible_move_row = move[0]
             possible_move_col = move[1]
@@ -246,9 +238,6 @@ class Board:
                 self.board[move_row][move_col].row = move_row
 
                 self.board[piece_row][piece_col] = 0
-
-                self.board[move_row][move_col].draw_circle(window)
-                pygame.display.update()
 
                 if(self.board[move_row][move_col].color == BLACK and move_row==0):
                     self.board[move_row][move_col].is_queen = True
