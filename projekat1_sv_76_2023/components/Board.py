@@ -89,8 +89,35 @@ class Board:
         available_pieces = []
 
         for row in range(ROWS):
-            for column in (COLS):
-                pass
+            for column in range(COLS):
+                if self.board[row][column]==0 or (self.board[row][column]!=0 and self.board[row][column].color!=player_color): continue
+
+                piece_analizing = self.board[row][column]
+                
+                row_temp = row + piece_analizing.direction
+                column_temp1 = column-1
+                column_temp2 = column+1
+
+                if not self.out_of_bounds(row_temp, column_temp1) and (self.board[row_temp][column_temp1]!=0 and 
+                                                self.board[row_temp][column_temp1].color != piece_analizing.color): 
+                    available_pieces.append((row, column))
+                
+                if not self.out_of_bounds(row_temp, column_temp2) and (self.board[row_temp][column_temp2 ]!=0 
+                                        and self.board[row_temp][column_temp2 ].color != piece_analizing.color):
+                    available_pieces.append((row, column))
+
+                if piece_analizing.is_queen:
+                    row_queen = row + piece_analizing.direction*-1
+                    if not self.out_of_bounds(row_queen, column_temp1) and (self.board[row_queen][column_temp1]!=0 and 
+                                                self.board[row_queen][column_temp1].color != piece_analizing.color): 
+                        available_pieces.append((row, column))
+                
+                    if not self.out_of_bounds(row_queen, column_temp2) and (self.board[row_queen][column_temp2 ]!=0 
+                                            and self.board[row_queen][column_temp2 ].color != piece_analizing.color):
+                        available_pieces.append((row, column))
+                    
+        return available_pieces
+                
 
         
     def check_draw_possible_mustattack(self, player_pos_row, possible_move1_row, possible_move2_row):
