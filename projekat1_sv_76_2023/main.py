@@ -21,12 +21,12 @@ def main():
         pygame.time.Clock().tick(60)
 
         player_made_move = False
-        while not player_made_move:
+        while not player_made_move: # and player_turn==BLACK
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
 
-                    possible_moves = board.selected_piece(WINDOW, piece_pos_col, piece_pos_row, player_turn)
+                    possible_moves = board.selected_piece(piece_pos_col, piece_pos_row, player_turn)
                     if(possible_moves == False): continue
 
                     for move in possible_moves:
@@ -50,16 +50,18 @@ def main():
                                 if moved: 
                                     player_made_move = True
 
-                                waiting = False        
-                                        
+                                waiting = False                                        
 
                 if event.type==pygame.QUIT:
                     player_made_move = True
                     play=False
-
-            board.draw_positions(WINDOW)
-            board.draw_pieces_board(WINDOW)
-            pygame.display.update()
+        
+        if player_turn == RED:
+            print('red')
+        
+        board.draw_positions(WINDOW)
+        board.draw_pieces_board(WINDOW)
+        pygame.display.update()
 
         if board.black_pieces_left==0 or board.red_pieces_left==0:
             pygame.quit()

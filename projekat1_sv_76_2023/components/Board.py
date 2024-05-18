@@ -144,10 +144,10 @@ class Board:
 
         
 
-    def selected_piece(self,window, position_col, position_row, player):
+    def selected_piece(self, position_col, position_row, player):
         if MUST_ATTACK: 
             pieces_attack_position = self.get_pieces_attack_position(player)
-            if len(pieces_attack_position)>0 and not (position_row ,position_col) in pieces_attack_position: return []
+            if len(pieces_attack_position)>0 and not (position_row, position_col) in pieces_attack_position: return []
 
         if(self.board[position_row][position_col]!=0 and self.board[position_row][position_col].color==player):
             possible_moves = []
@@ -190,8 +190,6 @@ class Board:
 
             if (self.board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None and (can_move_row4, can_move_col4) in moves_check_mustattack):
                 possible_moves.append((can_move_row4, can_move_col4))
-
-            pygame.display.update()
 
             return possible_moves
         else:
