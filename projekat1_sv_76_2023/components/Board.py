@@ -15,6 +15,8 @@ class Board:
         self.black_piece_queens = 0
         self.red_piece_queens = 0
 
+        self.MUST_ATTACK = False
+
     def out_of_bounds(self, row, col):
         if(row>=0 and col>=0 and row<=7 and col<=7):
             return False
@@ -57,18 +59,15 @@ class Board:
     def draw_suggested_pieces_board(self, window, color):
         pieces_in_position = self.get_pieces_attack_position(color)
 
-        if MUST_ATTACK and len(pieces_in_position)>0:
-            
+        if  self.MUST_ATTACK  and len(pieces_in_position)>0:
             for row in range(ROWS):
                 for col in range(COLS):
                     if (row,col) in pieces_in_position and self.board[row][col]!=0:
                         self.board[row][col].draw_suggested(window) 
 
         else:
-
             for row in range(ROWS):
                 for col in range(COLS):
-
                     if self.board[row][col]!=0 and self.board[row][col].color==color and len(self.selected_piece(col, row, color))>0:
                         self.board[row][col].draw_suggested(window) 
                     
@@ -180,7 +179,7 @@ class Board:
 
         
     def check_draw_possible_mustattack(self, player, possible_moves):
-        if MUST_ATTACK:
+        if self.MUST_ATTACK:
             save_moves = []
 
             for move in possible_moves:
@@ -199,7 +198,7 @@ class Board:
         
 
     def selected_piece(self, position_col, position_row, player):
-        if MUST_ATTACK: 
+        if self.MUST_ATTACK: 
             pieces_attack_position = self.get_pieces_attack_position(player)
             if len(pieces_attack_position)>0 and not (position_row, position_col) in pieces_attack_position: return []
 

@@ -1,5 +1,6 @@
 import pygame
 from components.constants import *
+import components.constants as constants
 from components.Board import Board
 import sys
 from components.algorithm import minimax
@@ -9,7 +10,49 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 board = Board()
 
 def start_menu():
-    pass
+    WINDOW.fill(WHITE)
+
+    rect_width = 200
+    rect_height = 100
+
+    x = (HEIGHT - rect_width) // 2
+    y1= (HEIGHT - 2 * rect_height - 10) // 2  
+    y2 = y1 + rect_height + 10
+
+    font = pygame.font.SysFont(None, 36)
+
+    must_att = font.render('Must attack', True, WHITE)
+    must_not_att = font.render('Free movement', True, WHITE)
+
+    must_att_rect = must_att.get_rect(center=(x + rect_width // 2, y1 + rect_height // 2))
+    must_not_att_rect = must_not_att.get_rect(center=(x + rect_width // 2, y2 + rect_height // 2))
+
+    wait = True
+    while wait:
+        pygame.draw.rect(WINDOW, BLACK, (x, y1, rect_width, rect_height))  
+        pygame.draw.rect(WINDOW, BLACK, (x, y2, rect_width, rect_height))  
+
+        WINDOW.blit(must_att, must_att_rect)
+        WINDOW.blit(must_not_att, must_not_att_rect)
+        
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if x <= mouse_pos[0] <= x + rect_width:
+                    if y1 <= mouse_pos[1] <= y1 + rect_height:   
+                       
+                        return True
+                    
+                    elif y2 <= mouse_pos[1] <= y2 + rect_height:
+                       
+                        return False
+
 
 def update_display(color):
     board.draw_positions(WINDOW)
@@ -20,6 +63,7 @@ def update_display(color):
 def main():
     play = True
     player_turn = BLACK
+
     
     board.draw_positions(WINDOW)
     board.draw_pieces_board_beggining(WINDOW)
@@ -77,7 +121,6 @@ def main():
             pygame.quit()
             sys.exit()
 
-
         if player_turn==BLACK: player_turn=RED
         else: player_turn=BLACK
 
@@ -88,4 +131,5 @@ def main():
 if __name__ == '__main__':
     pygame.init()
 
+    board.MUST_ATTACK = start_menu()
     main()
