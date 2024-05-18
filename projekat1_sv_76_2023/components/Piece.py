@@ -30,3 +30,5 @@ class Piece:
         pygame.draw.circle(window, self.color, (self.x,self.y), SQUARE_SIZE//2-10)
 
     
+    def is_next_to_wall(self):
+        return self.row == 0 or self.row == 7 or self.col == 0 or self.col == 7

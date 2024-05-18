@@ -2,6 +2,7 @@ import pygame
 from components.constants import *
 from components.Board import Board
 import sys
+from components.algorithm import minimax
 
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -19,6 +20,8 @@ def main():
 
     while play:
         pygame.time.Clock().tick(60)
+
+        minimax(board, None, None, None, None, None)
 
         player_made_move = False
         while not player_made_move: # and player_turn==BLACK

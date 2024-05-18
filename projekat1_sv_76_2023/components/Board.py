@@ -52,6 +52,38 @@ class Board:
                     piece.draw_circle(window)
 
 
+    def get_num_pieces_attack_positions(self, color):
+        return len(self.get_pieces_attack_position(color))
+    
+    def get_pieces_corner(self, color):
+        sum=4
+
+        if self.board[0][0]==0 or self.board[0][0].color!=color:
+            sum-=1
+        if self.board[0][7]==0 or self.board[0][7].color!=color:
+            sum-=1
+        if self.board[7][0]==0 or self.board[7][0].color!=color:
+            sum-=1
+        if self.board[7][7]==0 or self.board[7][7].color!=color:
+            sum-=1
+
+        return sum
+    
+    def get_pieces_wall(self, color):
+        sum = 0
+
+        for i in range(7):
+            if self.board[0][i+1]!=0 and self.board[0][i+1].color==color:
+                sum+=1
+            if self.board[i+1][0]!=0 and self.board[i+1][0].color==color:
+                sum+=1
+            if self.board[7][i+1]!=0 and self.board[7][i+1].color==color:
+                sum+=1
+            if self.board[i+1][7]!=0 and self.board[i+1][7].color==color:
+                sum+=1
+
+        return sum-self.get_pieces_corner(color)
+
 
     def check_draw_possible_move(self, row, column, player):
         if(not self.out_of_bounds(row,column) and self.board[row][column]==0):
@@ -248,7 +280,6 @@ class Board:
                and (possible_move_row==move_row and possible_move_col==move_col)):
                 return False
             
-
     
 
         
