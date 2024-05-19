@@ -1,4 +1,5 @@
 from .constants import *
+from .hashmap import HashMap
 
 def heuristic(board):
     QUEEN_WEIGHT = 2
@@ -30,6 +31,7 @@ def heuristic(board):
     
 
 def minimax(board, depth, maximizer, alpha, beta, value):
-    pass
+    print(board.get_pieces_wall(BLACK))
+    
 
 

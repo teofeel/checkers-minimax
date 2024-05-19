@@ -56,7 +56,11 @@ def start_menu():
 
 def update_display(color):
     board.draw_positions(WINDOW)
-    board.draw_suggested_pieces_board(WINDOW, color)
+    reccommended = board.draw_suggested_pieces_board(WINDOW, color)
+
+    for item in reccommended:
+        board.board[item[0]][item[1]].draw_suggested(WINDOW)
+
     board.draw_pieces_board(WINDOW)
     pygame.display.update()
 
@@ -74,7 +78,7 @@ def main():
 
         update_display(player_turn)
 
-        #minimax(board, None, None, None, None, None)
+        minimax(board, None, None, None, None, None)
 
         player_made_move = False
         while not player_made_move: # and player_turn==BLACK
@@ -130,6 +134,7 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
-
+    
     board.MUST_ATTACK = start_menu()
+
     main()
