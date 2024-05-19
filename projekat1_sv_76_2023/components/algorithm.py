@@ -1,9 +1,10 @@
 from .constants import *
 from .hashmap import HashMap
+import copy
 
 def heuristic(board):
-    QUEEN_WEIGHT = 2
-    ATTACK_WEIGHT = 3
+    QUEEN_WEIGHT = 1.8
+    ATTACK_WEIGHT = 2
     CORNER_WEIGHT = 1.5
     WALL_WEIGHT = 1.2
 
@@ -28,10 +29,97 @@ def heuristic(board):
 
     return black_score, red_score
 
+
+
+def minimax(board, depth, maximizer, alpha, beta, hash_map):
+    if depth == 0:
+        heuristic_score = heuristic(board)
+        black_score = heuristic_score[0]
+        red_score = heuristic_score[1]
+        return black_score-red_score
+    
+    if maximizer == RED: #Maximizer is 
+        max_value = float('-inf')
+
+        for suggested_piece in board.draw_suggested_pieces_board(maximizer):
+            piece_row, piece_col = suggested_piece[0], suggested_piece[1]
+
+            board_temp = copy.deepcopy(board)
+            possibles_moves = board_temp.selected_piece(piece_col, piece_row, maximizer)
+
+            for possible_move in possibles_moves:
+                possible_move_row, possible_move_col = possible_move[0], possible_move[1]
+                
+                board_temp1 = copy.deepcopy(board_temp)
+
+                board_temp1.move_piece(possibles_moves, piece_col, piece_row, possible_move_col, possible_move_row)
+                value = minimax(board_temp, depth-1, BLACK, alpha, beta, hash_map)
+
+                if max_value<value:
+                    max_value = value
+                    
+
+                if max_value<=value and depth>=1:
+                    hash_map[max_value] = [suggested_piece, [possible_move]]   
+
+                alpha = max(alpha, value)   
+
+                if beta<=alpha:
+                    break
+
+
+        return max_value 
+
+    else:
+        min_value = float('inf')
+        
+
+        for suggested_piece in board.draw_suggested_pieces_board(maximizer):
+            piece_row, piece_col = suggested_piece[0], suggested_piece[1]
+
+            board_temp = copy.deepcopy(board)
+            possibles_moves = board_temp.selected_piece(piece_col, piece_row, maximizer)
+
+            for possible_move in possibles_moves:
+                possible_move_row, possible_move_col = possible_move[0], possible_move[1]
+                
+                board_temp1 = copy.deepcopy(board_temp)
+
+                board_temp1.move_piece(possibles_moves, piece_col, piece_row, possible_move_col, possible_move_row)
+                value = minimax(board_temp, depth-1, RED, alpha, beta, hash_map)
+
+                if min_value>value:
+                    min_value = value
+                    
+
+                if min_value>=value and depth>=1:
+                    hash_map[min_value] = [suggested_piece, [possible_move]]  
+
+                alpha = max(alpha, value)   
+                
+                if beta<=alpha:
+                    break
+
+        return min_value
+
+    
+def test(hash_map):
+    hash_map[1]=1
+
+def make_move(board, player, depth):
+    hash_map = HashMap()
+
+    board_temp = copy.deepcopy(board)
+
+    move_value = minimax(board_temp, depth, player, 0, 0, hash_map)
+
+    
     
 
-def minimax(board, depth, maximizer, alpha, beta, value):
-    print(board.get_pieces_wall(BLACK))
-    
+    return hash_map[move_value]
+            
+
+
+
 
 

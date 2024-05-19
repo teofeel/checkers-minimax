@@ -36,7 +36,9 @@ class Board:
     def MUST_ATTACK(self):
         return self._MUST_ATTACK
     
-    
+    @board.setter
+    def board(self, row, col, value):
+        self._board[row][col] = value
     @MUST_ATTACK.setter
     def MUST_ATTACK(self, value):
         self._MUST_ATTACK = value
@@ -81,7 +83,7 @@ class Board:
                 if piece!=0:
                     piece.draw_circle(window)
 
-    def draw_suggested_pieces_board(self, window, color):
+    def draw_suggested_pieces_board(self,color):
         pieces_in_position = self.get_pieces_attack_position(color)
         
         reccommended_pieces = []

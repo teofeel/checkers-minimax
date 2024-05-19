@@ -33,13 +33,13 @@ class HashMap:
         hashed_key = self._hash(key)
 
         bucket = self._data[hashed_key]
-
+        
         if bucket != None:
             for item in bucket:
                 if item[0] == key:
                     item[1] = value
 
-            bucket.append((key, value))
+            bucket.append([key, value])
                 
         return None
 

@@ -3,8 +3,8 @@ from components.constants import *
 import components.constants as constants
 from components.Board import Board
 import sys
-from components.algorithm import minimax
-
+from components.algorithm import *
+import time
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 board = Board()
@@ -56,7 +56,7 @@ def start_menu():
 
 def update_display(color):
     board.draw_positions(WINDOW)
-    reccommended = board.draw_suggested_pieces_board(WINDOW, color)
+    reccommended = board.draw_suggested_pieces_board(color)
 
     for item in reccommended:
         board.board[item[0]][item[1]].draw_suggested(WINDOW)
@@ -78,10 +78,18 @@ def main():
 
         update_display(player_turn)
 
-        minimax(board, None, None, None, None, None)
+        if player_turn == RED:
+            before = time.time()
+
+            move = make_move(board, RED, 3)
+
+            print(time.time()-before, move)
+
+            board.move_piece(move[1], move[0][1], move[0][0], move[1][0][1], move[1][0][0])
+            
 
         player_made_move = False
-        while not player_made_move: # and player_turn==BLACK
+        while not player_made_move and player_turn==BLACK: 
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
@@ -118,8 +126,7 @@ def main():
 
             update_display(player_turn)
 
-        if player_turn == RED:
-            print('red')
+        
 
         if board.black_pieces_left==0 or board.red_pieces_left==0:
             pygame.quit()
