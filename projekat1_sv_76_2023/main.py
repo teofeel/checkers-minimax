@@ -64,6 +64,12 @@ def update_display(color):
     board.draw_pieces_board(WINDOW)
     pygame.display.update()
 
+def show_next_player():
+    pass
+
+def show_draw():
+    pass
+
 def main():
     play = True
     player_turn = BLACK
@@ -81,9 +87,11 @@ def main():
         if player_turn == RED:
             before = time.time()
 
-            move = make_move(board, RED, 3)
+            move = make_move(board, RED, 4)
 
             print(time.time()-before, move)
+
+            if(move == None): time.sleep(650000)
 
             board.move_piece(move[1], move[0][1], move[0][0], move[1][0][1], move[1][0][0])
             
@@ -129,8 +137,8 @@ def main():
         
 
         if board.black_pieces_left==0 or board.red_pieces_left==0:
-            pygame.quit()
-            sys.exit()
+           pygame.quit()
+           sys.exit()
 
         if player_turn==BLACK: player_turn=RED
         else: player_turn=BLACK

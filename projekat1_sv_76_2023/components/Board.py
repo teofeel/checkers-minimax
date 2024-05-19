@@ -39,6 +39,15 @@ class Board:
     @board.setter
     def board(self, row, col, value):
         self._board[row][col] = value
+
+    @black_pieces_left.setter
+    def black_pieces_left(self, value):
+        self.black_pieces_left = value
+
+    @red_pieces_left.setter
+    def red_pieces_left(self, value):
+        self.red_pieces_left = value
+
     @MUST_ATTACK.setter
     def MUST_ATTACK(self, value):
         self._MUST_ATTACK = value
@@ -108,6 +117,47 @@ class Board:
     def get_num_pieces_attack_positions(self, color):
         return len(self.get_pieces_attack_position(color))
     
+    def get_pieces_can_be_captured(self,color):
+        sum=0
+
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self._board[row][col]
+                if piece!=0 and piece.color == color:
+                    if not self.out_of_bounds(row-1,col-1):
+                        point1 = self.board[row-1][col-1]
+                    else: point1 = None
+
+                    if not self.out_of_bounds(row-1,col+1):
+                        point2 = self.board[row-1][col+1]
+                    else: point2 = None
+
+
+                    if not self.out_of_bounds(row+1,col-1):
+                        point3 = self.board[row+1][col-1]
+                    else: point3 = None
+
+
+                    if not self.out_of_bounds(row+1,col+1):
+                        point4 = self.board[row+1][col+1]
+                    else: point4 = None
+
+
+                    if (point1 != None and point1!=0) and (point4 != None and point4==0) and (point1.direction==1 or point1.is_queen) and point1.color!=color:
+                        sum+=1
+
+                    if (point2 != None and point2!=0) and (point3 != None and point3==0) and (point2.direction==1 or point2.is_queen) and point2.color!=color:
+                        sum+=1
+
+                    if (point3 != None and point3!=0) and (point2 != None and point2==0) and (point3.direction==-1 or point3.is_queen) and point3.color!=color:
+                        sum+=1
+
+                    if (point4 != None and point4!=0) and (point1 != None and point1==0) and (point4.direction==-1 or point4.is_queen) and point4.color!=color:
+                        sum+=1
+
+        return sum
+
+        pass
     def get_pieces_corner(self, color):
         sum=4
 
@@ -136,6 +186,19 @@ class Board:
                 sum+=1
 
         return sum 
+
+    def get_advanced_pieces(self, color):
+        sum = 0
+
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self._board[row][col]
+                if piece!=0 and color == RED and row > ROWS//2-1:
+                    sum+=1
+                elif piece!=0 and color == BLACK and row < ROWS//2+1:
+                    sum+=1
+        
+        return sum
 
 
     def check_draw_possible_move(self, row, column, player):
