@@ -38,7 +38,7 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
         red_score = heuristic_score[1]
         return black_score-red_score
     
-    if maximizer == RED: #Maximizer is 
+    if maximizer == RED: 
         max_value = float('-inf')
 
         for suggested_piece in board.draw_suggested_pieces_board(maximizer):
