@@ -8,7 +8,7 @@ import time
 
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 board = Board()
-
+times = []
 def start_menu():
     WINDOW.fill(WHITE)
 
@@ -74,7 +74,6 @@ def main():
     play = True
     player_turn = BLACK
 
-    
     board.draw_positions(WINDOW)
     board.draw_pieces_board_beggining(WINDOW)
     pygame.display.update()
@@ -86,14 +85,17 @@ def main():
 
         if player_turn == RED:
             before = time.time()
-
+           
+            
             move = make_move(board, RED, 4)
+            #time.sleep(650000)
 
-            print(time.time()-before, move)
+            board.move_piece([move[1]], move[0][1], move[0][0], move[1][1], move[1][0])
 
-            if(move == None): time.sleep(650000)
+            times.append(time.time()-before)
+            print(time.time()-before)
 
-            board.move_piece(move[1], move[0][1], move[0][0], move[1][0][1], move[1][0][0])
+            
             
 
         player_made_move = False
@@ -102,7 +104,7 @@ def main():
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
 
-                    possible_moves = board.selected_piece(piece_pos_col, piece_pos_row, player_turn)
+                    possible_moves = board.selected_piece(piece_pos_col, piece_pos_row, player_turn, board.get_pieces_attack_position(BLACK))
                     if(possible_moves == False): continue
 
                     for move in possible_moves:
@@ -137,6 +139,7 @@ def main():
         
 
         if board.black_pieces_left==0 or board.red_pieces_left==0:
+           print(sum(times)/len(times))
            pygame.quit()
            sys.exit()
 

@@ -1,7 +1,7 @@
 import pygame
 from .Piece import Piece
 from .constants import *
-import math
+from .hashmap import HashMap
 
 class Board:
     def __init__(self):
@@ -40,13 +40,38 @@ class Board:
     def board(self, row, col, value):
         self._board[row][col] = value
 
+    @board.setter
+    def board(self, value):
+        self._board = value
+
+        self._black_pieces_left = 0
+        self._red_pieces_left = 0
+        self._red_piece_queens = 0
+        self._black_piece_queens = 0
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self._board[row][col]
+                if piece!=0:
+                    if piece.color == BLACK:
+                        self._black_pieces_left +=1
+
+                    elif piece.color == RED:
+                        self._red_pieces_left +=1
+
+                    if piece.color == BLACK and piece.is_queen:
+                        self._black_piece_queens += 1
+
+                    elif piece.color == BLACK and piece.is_queen:
+                        self._red_piece_queens += 1
+
+
     @black_pieces_left.setter
     def black_pieces_left(self, value):
-        self.black_pieces_left = value
+        self._black_pieces_left = value
 
     @red_pieces_left.setter
     def red_pieces_left(self, value):
-        self.red_pieces_left = value
+        self._red_pieces_left = value
 
     @MUST_ATTACK.setter
     def MUST_ATTACK(self, value):
@@ -96,17 +121,17 @@ class Board:
         pieces_in_position = self.get_pieces_attack_position(color)
         
         reccommended_pieces = []
-        if  self._MUST_ATTACK  and len(pieces_in_position)>0:
+        if  self._MUST_ATTACK and len(pieces_in_position)>0:
             for row in range(ROWS):
                 for col in range(COLS):
-                    if (row,col) in pieces_in_position and self._board[row][col]!=0:
+                    if self._board[row][col]!=0 and (row,col) in pieces_in_position:
                         reccommended_pieces.append((row,col))
                         #self._board[row][col].draw_suggested(window) 
 
         else:
             for row in range(ROWS):
                 for col in range(COLS):
-                    if self._board[row][col]!=0 and self._board[row][col].color==color and len(self.selected_piece(col, row, color))>0:
+                    if self._board[row][col]!=0 and self._board[row][col].color==color and len(self.selected_piece(col, row, color, pieces_in_position))>0:
                         reccommended_pieces.append((row,col))
                         #self._board[row][col].draw_suggested(window) 
 
@@ -157,7 +182,6 @@ class Board:
 
         return sum
 
-        pass
     def get_pieces_corner(self, color):
         sum=4
 
@@ -230,7 +254,6 @@ class Board:
         return None, None     
 
     def get_pieces_attack_position(self, player_color):
-        ######### NAPISATI OVO DNS ##############
         available_pieces = []
 
         for row in range(ROWS):
@@ -292,7 +315,7 @@ class Board:
 
         
 
-    def selected_piece(self, position_col, position_row, player):
+    def selected_piece(self, position_col, position_row, player, pieces_attack_position):
         if self._MUST_ATTACK: 
             pieces_attack_position = self.get_pieces_attack_position(player)
             if len(pieces_attack_position)>0 and not (position_row, position_col) in pieces_attack_position: return []
@@ -396,6 +419,31 @@ class Board:
                and (possible_move_row==move_row and possible_move_col==move_col)):
                 return False
             
-    
+    def get_pieces_movement_algo(self, color):
+        hash_map = HashMap()
 
-        
+        pieces_in_position = self.get_pieces_attack_position(color)
+        moves=[]
+        if  self._MUST_ATTACK and len(pieces_in_position)>0:
+            for row in range(ROWS):
+                for col in range(COLS):
+                    if self._board[row][col]==0 or not (row,col) in pieces_in_position: continue
+
+                    possible_moves = self.selected_piece(col, row, color, pieces_in_position)
+                    for possible_move in possible_moves:
+                       moves.append([(row,col), possible_move])
+                        
+
+        else:
+            for row in range(ROWS):
+                for col in range(COLS):
+                    if self._board[row][col]==0 or self._board[row][col].color!=color :continue
+
+                    possible_moves= self.selected_piece(col, row, color, pieces_in_position)
+                    for possible_move in possible_moves:
+                       moves.append([(row,col), possible_move])
+
+
+        return moves
+
+        #return hash_map => [suggested_piece, [moveable_points]]
