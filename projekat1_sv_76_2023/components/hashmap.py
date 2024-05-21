@@ -1,5 +1,5 @@
 import random
-class HashMap:
+class HashMapMoves:
     def __init__(self, size=100):
         self._data = [[] for _ in range(size)]
 
@@ -56,4 +56,5 @@ class HashMap:
                 
         return False
     
+
 

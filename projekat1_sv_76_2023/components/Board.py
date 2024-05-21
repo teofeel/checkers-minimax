@@ -1,11 +1,11 @@
 import pygame
 from .Piece import Piece
 from .constants import *
-from .hashmap import HashMap
+from .hashmap import HashMapMoves
 
 class Board:
     def __init__(self):
-        self._board=[] # PREBACITI OVO U HASHMAPU
+        self._board=[] 
 
         self._black_pieces_left = 12
         self._red_pieces_left = 12
@@ -391,6 +391,9 @@ class Board:
             if piece_color == BLACK: self._black_piece_queens-=1
             else: self._red_piece_queens-=1       
 
+    def multiple_jumps(self):
+        pass
+
     def move_piece(self, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:
             possible_move_row = move[0]
@@ -399,14 +402,19 @@ class Board:
             if((not self.out_of_bounds(possible_move_row, possible_move_col)) and self._board[possible_move_row][possible_move_col]==0 
                and (possible_move_row==move_row and possible_move_col==move_col)):
                 
+                removed = False
+
                 if abs(move_row-piece_row)==2:
                     self.remove_piece(self._board[piece_row][piece_col], move_col, move_row)
+                    removed = True
                 
                 self._board[move_row][move_col] = self._board[piece_row][piece_col]
                 self._board[move_row][move_col].column = move_col
                 self._board[move_row][move_col].row = move_row
 
                 self._board[piece_row][piece_col] = 0
+
+                if 
 
                 if(self._board[move_row][move_col].color == BLACK and move_row==0):
                     self._board[move_row][move_col].is_queen = True
@@ -420,10 +428,9 @@ class Board:
                 return False
             
     def get_pieces_movement_algo(self, color):
-        hash_map = HashMap()
-
         pieces_in_position = self.get_pieces_attack_position(color)
         moves=[]
+
         if  self._MUST_ATTACK and len(pieces_in_position)>0:
             for row in range(ROWS):
                 for col in range(COLS):
@@ -447,3 +454,21 @@ class Board:
         return moves
 
         #return hash_map => [suggested_piece, [moveable_points]]
+
+    def __str__(self):
+        value=''
+        for row in range(ROWS):
+            row_str = ''
+            for col in range(COLS):
+                row_str += str(self._board[row][col])+', '
+                #print(str(self.board[row][col]))
+            value += row_str+' | '
+
+        return value
+    
+    def __eq__(self, value):
+        if str(self) == str(value):
+            return True
+        return False
+
+

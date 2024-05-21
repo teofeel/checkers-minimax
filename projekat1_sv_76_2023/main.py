@@ -9,6 +9,7 @@ import time
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 board = Board()
 times = []
+
 def start_menu():
     WINDOW.fill(WHITE)
 
@@ -85,24 +86,20 @@ def main():
 
         if player_turn == RED:
             before = time.time()
-           
-            
-            move = make_move(board, RED, 4)
-            #time.sleep(650000)
 
+            move = make_move(board, RED, ALGORITHM_DEPTH)
             board.move_piece([move[1]], move[0][1], move[0][0], move[1][1], move[1][0])
 
             times.append(time.time()-before)
-            print(time.time()-before)
-
-            
-            
+            print(time.time()-before)            
 
         player_made_move = False
         while not player_made_move and player_turn==BLACK: 
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
+                    
+                    if len(board.get_pieces_movement_algo(BLACK))==0: break
 
                     possible_moves = board.selected_piece(piece_pos_col, piece_pos_row, player_turn, board.get_pieces_attack_position(BLACK))
                     if(possible_moves == False): continue
@@ -117,6 +114,7 @@ def main():
                         for event_waiting in pygame.event.get():
 
                             if event_waiting.type == pygame.QUIT:
+                                save_boards(board.MUST_ATTACK)
                                 pygame.quit()
                                 sys.exit()
 
@@ -136,16 +134,17 @@ def main():
 
             update_display(player_turn)
 
-        
-
         if board.black_pieces_left==0 or board.red_pieces_left==0:
            print(sum(times)/len(times))
+           save_boards(board.MUST_ATTACK)
+
            pygame.quit()
            sys.exit()
 
         if player_turn==BLACK: player_turn=RED
         else: player_turn=BLACK
 
+    save_boards(board.MUST_ATTACK)
     pygame.quit()
     sys.exit()
 

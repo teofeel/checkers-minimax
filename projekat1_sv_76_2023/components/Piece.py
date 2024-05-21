@@ -36,3 +36,14 @@ class Piece:
     
     def is_next_to_wall(self):
         return self.row == 0 or self.row == 7 or self.col == 0 or self.col == 7
+    
+    def __str__(self):
+        if self.color == BLACK:
+            col = 'black'
+        else:
+            col = 'red'
+
+        if self.is_queen:
+            return col+' queen'
+        else:
+            return col+' normal'

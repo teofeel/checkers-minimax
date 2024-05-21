@@ -1,7 +1,10 @@
 from .constants import *
-from .hashmap import HashMap
+from .hashmap import HashMapMoves
 import copy
 import pygame
+import json
+
+boards = {}
 
 def heuristic(board):
     if board.MUST_ATTACK:
@@ -44,6 +47,23 @@ def heuristic(board):
 
     return red_score - black_score
 
+def load_boards(must_attack):
+    global boards
+
+    if must_attack:
+        if len(json(open('must_attack_boards.json')))>0:
+            boards = json.load(open('must_attack_boards.json'))
+    else:
+        if len(json(open('boards.json')))>0:
+            boards = json.load(open('boards.json'))
+
+def save_boards(must_attack):
+    if must_attack:
+        json.dump( boards, open( 'must_attack_boards.json','w'))
+    else:
+        json.dump( boards, open( 'boards.json','w'))
+
+
 
 def minimax(board, depth, maximizer, alpha, beta, hash_map):
     if depth == 0:
@@ -57,12 +77,13 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
             move = move_suggest[1]
 
             board_temp = copy.deepcopy(board)
-            board_temp.move_piece([move_suggest[1]], possible_piece[1], possible_piece[0], move[1], move[0])
+            board_temp.move_piece([move_suggest[1]], possible_piece[1], possible_piece[0], move[1], move[0])    
 
             value = minimax(board_temp, depth-1, BLACK, alpha, beta, hash_map)
-
-            if value>= max_value:
+            
+            if value >= max_value:
                 max_value=value
+
                 if depth>3:
                     hash_map[max_value] = move_suggest
             
@@ -88,9 +109,7 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
 
             if value <= min_value:
                 min_value = value
-                if depth>3:
-                    hash_map[min_value] = possible_piece
-            
+
             beta = min(beta, min_value)
             if beta <= alpha:
                 break
@@ -100,15 +119,22 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
 
 
 def make_move(board, player, depth):
-    hash_map = HashMap()
+    hash_map = HashMapMoves()
+
+    # check if board is mapped with value (piece, move)
+    # if exist and same return value (piece, move)
+
+    #if str(board) in boards:
+    #    return boards[str(board)]
+    if str(board) in boards:
+        return boards[str(board)]
 
     board_temp = copy.deepcopy(board)
-
-    #print(board_temp.get_pieces_movement_algo(RED))
     
     move_value = minimax(board_temp, depth, player, float('-inf'), float('inf'), hash_map)
-    
-    print(hash_map[move_value])
+
+    boards[str(board)] = hash_map[move_value]
+
     return hash_map[move_value]
             
 
