@@ -8,23 +8,18 @@ import os
 boards = HashMap()
 
 def heuristic(board):
-    if board.MUST_ATTACK:
-        BASIC_PIECE_SCORE = 50
-        ADVANCED_PIECE_SCORE = 15
-        QUEEN_WEIGHT = 15
-        ATTACK_WEIGHT = 15
-        CAN_BE_CAPTURED_WEIGHT = -30
-        CORNER_WEIGHT = -1
-        WALL_WEIGHT = -0.5
-    else:
-        BASIC_PIECE_SCORE = 50
-        ADVANCED_PIECE_SCORE = 20
-        QUEEN_WEIGHT = 30
-        ATTACK_WEIGHT = 25
-        CAN_BE_CAPTURED_WEIGHT = -30
-        CORNER_WEIGHT = -15
-        WALL_WEIGHT = -10
+    BASIC_PIECE_SCORE = 50
 
+    if not board.MUST_ATTACK:
+        BASIC_PIECE_SCORE = 75
+
+    ADVANCED_PIECE_SCORE = 15
+    QUEEN_WEIGHT = 15
+    ATTACK_WEIGHT = 15
+    CAN_BE_CAPTURED_WEIGHT = -30
+    CORNER_WEIGHT = -1
+    WALL_WEIGHT = -0.5
+    
 
     black_basic_score           = board.black_pieces_left                       * BASIC_PIECE_SCORE
     black_advanced_piece_score  = board.get_advanced_pieces(BLACK)              * ADVANCED_PIECE_SCORE
@@ -153,7 +148,7 @@ def make_move(board, player, depth):
     
     move_value = minimax(board_temp, depth, player, float('-inf'), float('inf'), hash_map)
 
-    if board.red_pieces_left>4:
+    if board.red_pieces_left + board.black_pieces_left>5 and hash_map[move_value]!=None:
         boards[str(board)] = hash_map[move_value]
 
     return hash_map[move_value]
