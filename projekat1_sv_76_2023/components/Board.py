@@ -406,9 +406,6 @@ class Board:
             
         return piece_row, piece_col
 
-        
-        #return  move_row, move_col
-
     def move_piece(self, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:
             possible_move_row = move[0]

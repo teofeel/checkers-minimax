@@ -17,13 +17,13 @@ def heuristic(board):
         CORNER_WEIGHT = -1
         WALL_WEIGHT = -0.5
     else:
-        BASIC_PIECE_SCORE = 50
+        BASIC_PIECE_SCORE = 75
         ADVANCED_PIECE_SCORE = 15
         QUEEN_WEIGHT = 5
         ATTACK_WEIGHT = 30
         CAN_BE_CAPTURED_WEIGHT = -15
-        CORNER_WEIGHT = -1
-        WALL_WEIGHT = -0.5
+        CORNER_WEIGHT = -15
+        WALL_WEIGHT = -25
 
 
     black_basic_score           = board.black_pieces_left                       * BASIC_PIECE_SCORE

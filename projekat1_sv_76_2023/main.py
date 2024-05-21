@@ -11,7 +11,7 @@ board = Board()
 times = []
 
 def start_menu():
-    WINDOW.fill(WHITE)
+    WINDOW.fill(LIGHT_BROWN)
 
     rect_width = 200
     rect_height = 100
@@ -30,8 +30,8 @@ def start_menu():
 
     wait = True
     while wait:
-        pygame.draw.rect(WINDOW, BLACK, (x, y1, rect_width, rect_height))  
-        pygame.draw.rect(WINDOW, BLACK, (x, y2, rect_width, rect_height))  
+        pygame.draw.rect(WINDOW, DARK_BROWN, (x, y1, rect_width, rect_height))  
+        pygame.draw.rect(WINDOW, DARK_BROWN, (x, y2, rect_width, rect_height))  
 
         WINDOW.blit(must_att, must_att_rect)
         WINDOW.blit(must_not_att, must_not_att_rect)
