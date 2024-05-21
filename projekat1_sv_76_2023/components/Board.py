@@ -391,8 +391,23 @@ class Board:
             if piece_color == BLACK: self._black_piece_queens-=1
             else: self._red_piece_queens-=1       
 
-    def multiple_jumps(self):
-        pass
+    def multiple_jumps(self, possible_moves, piece_row, piece_col):
+        for move in possible_moves:
+            if abs(move[0]-piece_row)==2:
+                self.remove_piece(self._board[piece_row][piece_col], move[1], move[0])
+
+                self._board[move[0]][move[1]] = self._board[piece_row][piece_col]
+                self._board[move[0]][move[1]].column = move[1]
+                self._board[move[0]][move[1]].row = move[0]
+
+                self._board[piece_row][piece_col] = 0
+
+                return move[0], move[1]
+            
+        return piece_row, piece_col
+
+        
+        #return  move_row, move_col
 
     def move_piece(self, possible_moves, piece_col, piece_row, move_col, move_row):
         for move in possible_moves:
@@ -414,7 +429,21 @@ class Board:
 
                 self._board[piece_row][piece_col] = 0
 
-                if 
+                while removed:
+                    new_possible_moves = self.selected_piece(move_col, move_row, self._board[move_row][move_col].color, 
+                                                             self.get_pieces_attack_position(self._board[move_row][move_col].color))
+                    
+                    if len(new_possible_moves)>0:
+                        move_row1, move_col1 = self.multiple_jumps(new_possible_moves, move_row, move_col)
+
+                        if move_row1==move_row and move_col1==move_col:
+                            removed = False
+                        else: 
+                            move_row = move_row1
+                            move_col = move_col1
+                        
+                    removed = False
+
 
                 if(self._board[move_row][move_col].color == BLACK and move_row==0):
                     self._board[move_row][move_col].is_queen = True
