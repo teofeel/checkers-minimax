@@ -153,7 +153,8 @@ def make_move(board, player, depth):
     
     move_value = minimax(board_temp, depth, player, float('-inf'), float('inf'), hash_map)
 
-    boards[str(board)] = hash_map[move_value]
+    if board.red_pieces_left>4:
+        boards[str(board)] = hash_map[move_value]
 
     return hash_map[move_value]
             
