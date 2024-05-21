@@ -72,6 +72,7 @@ def show_draw():
     pass
 
 def main():
+    load_boards(board.MUST_ATTACK)
     play = True
     player_turn = BLACK
 
@@ -95,11 +96,15 @@ def main():
 
         player_made_move = False
         while not player_made_move and player_turn==BLACK: 
+            
+            if len(board.get_pieces_movement_algo(BLACK))==0: 
+                save_boards(board.MUST_ATTACK)
+                pygame.quit()
+                sys.exit()
+
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     piece_pos_col, piece_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
-                    
-                    if len(board.get_pieces_movement_algo(BLACK))==0: break
 
                     possible_moves = board.selected_piece(piece_pos_col, piece_pos_row, player_turn, board.get_pieces_attack_position(BLACK))
                     if(possible_moves == False): continue

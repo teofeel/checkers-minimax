@@ -1,7 +1,7 @@
 import pygame
 from .Piece import Piece
 from .constants import *
-from .hashmap import HashMapMoves
+from .hashmap import HashMap
 
 class Board:
     def __init__(self):
@@ -482,7 +482,6 @@ class Board:
 
         return moves
 
-        #return hash_map => [suggested_piece, [moveable_points]]
 
     def __str__(self):
         value=''

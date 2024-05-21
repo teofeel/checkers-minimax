@@ -1,6 +1,6 @@
 import random
-class HashMapMoves:
-    def __init__(self, size=100):
+class HashMap:
+    def __init__(self, size=10000):
         self._data = [[] for _ in range(size)]
 
         self._capacity = size
@@ -15,6 +15,8 @@ class HashMapMoves:
         compressed = hashed_value % self._capacity
         return compressed
     
+    def get_key(self):
+        pass
     
     def __getitem__(self, key):
         hashed_key = self._hash(key)
@@ -57,4 +59,21 @@ class HashMapMoves:
         return False
     
 
+    def __iter__(self):
+        for bucket in self._data:
+            for item in bucket:
+                yield item
 
+    #def __next__(self):
+    #    if self.data_index >= self._capacity:
+    #        raise StopIteration
+    #    
+    #    if self.bucket_index >= len(self._data[self.data_index]):
+    #        self.data_index += 1
+    #        self.bucket_index += 1
+    #        return self.__next__()
+    #    
+    #    value = self.data[self.data_index][self.bucket_index]
+    #    self.bucket_index += 1
+    #    return value
+    
