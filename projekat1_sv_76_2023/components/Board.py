@@ -426,7 +426,7 @@ class Board:
 
                 self._board[piece_row][piece_col] = 0
 
-                while removed:
+                while removed and self._MUST_ATTACK:
                     new_possible_moves = self.selected_piece(move_col, move_row, self._board[move_row][move_col].color, 
                                                              self.get_pieces_attack_position(self._board[move_row][move_col].color))
                     

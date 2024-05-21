@@ -19,9 +19,9 @@ def heuristic(board):
     else:
         BASIC_PIECE_SCORE = 75
         ADVANCED_PIECE_SCORE = 15
-        QUEEN_WEIGHT = 5
-        ATTACK_WEIGHT = 30
-        CAN_BE_CAPTURED_WEIGHT = -15
+        QUEEN_WEIGHT = 30
+        ATTACK_WEIGHT = 15
+        CAN_BE_CAPTURED_WEIGHT = -75
         CORNER_WEIGHT = -15
         WALL_WEIGHT = -25
 
