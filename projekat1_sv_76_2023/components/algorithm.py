@@ -17,13 +17,13 @@ def heuristic(board):
         CORNER_WEIGHT = -1
         WALL_WEIGHT = -0.5
     else:
-        BASIC_PIECE_SCORE = 75
-        ADVANCED_PIECE_SCORE = 15
+        BASIC_PIECE_SCORE = 50
+        ADVANCED_PIECE_SCORE = 20
         QUEEN_WEIGHT = 30
-        ATTACK_WEIGHT = 15
-        CAN_BE_CAPTURED_WEIGHT = -75
+        ATTACK_WEIGHT = 25
+        CAN_BE_CAPTURED_WEIGHT = -30
         CORNER_WEIGHT = -15
-        WALL_WEIGHT = -25
+        WALL_WEIGHT = -10
 
 
     black_basic_score           = board.black_pieces_left                       * BASIC_PIECE_SCORE
@@ -69,7 +69,7 @@ def load_boards(must_attack):
         if os.stat('must_attack_boards.txt').st_size==0:
             return
         
-        with open('must_attack_boards.txt','w') as file:
+        with open('must_attack_boards.txt','r') as file:
             extract_data(file)
     else:
         if os.stat('boards.txt').st_size==0:

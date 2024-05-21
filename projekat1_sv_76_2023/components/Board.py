@@ -2,6 +2,7 @@ import pygame
 from .Piece import Piece
 from .constants import *
 from .hashmap import HashMap
+import copy
 
 class Board:
     def __init__(self):
@@ -313,7 +314,7 @@ class Board:
             if len(save_moves)>0: return save_moves        
         return possible_moves
 
-        
+
 
     def selected_piece(self, position_col, position_row, player, pieces_attack_position):
         if self._MUST_ATTACK: 
@@ -361,7 +362,7 @@ class Board:
 
             if (self._board[position_row][position_col].is_queen and can_move_row4!=None and can_move_col4!=None and (can_move_row4, can_move_col4) in moves_check_mustattack):
                 possible_moves.append((can_move_row4, can_move_col4))
-
+                
             return possible_moves
         else:
             return False
@@ -479,14 +480,13 @@ class Board:
 
         return moves
 
-
     def __str__(self):
         value=''
         for row in range(ROWS):
             row_str = ''
             for col in range(COLS):
                 row_str += str(self._board[row][col])+', '
-                #print(str(self.board[row][col]))
+                
             value += row_str+' | '
 
         return value

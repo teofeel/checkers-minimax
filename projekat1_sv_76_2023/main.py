@@ -68,8 +68,46 @@ def update_display(color):
 def show_next_player():
     pass
 
-def show_draw():
-    pass
+
+def end_game(value):
+    WINDOW.fill(LIGHT_BROWN)
+
+    rect_width = 600
+    rect_height = 300
+
+    x = (HEIGHT - rect_width) // 2
+    y1 = (HEIGHT - 2 * rect_height - 10) // 2  
+
+
+    font = pygame.font.SysFont(None, 108)
+
+    rect_text = font.render(value, True, WHITE)
+
+    rect = rect_text.get_rect(center=(x + rect_width // 2, y1 + rect_height // 2))
+
+    wait = True
+    while wait:
+        pygame.draw.rect(WINDOW, DARK_BROWN, (x, y1, rect_width, rect_height))  
+
+        WINDOW.blit(rect_text, rect)
+        
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if x <= mouse_pos[0] <= x + rect_width:
+                    if y1 <= mouse_pos[1] <= y1 + rect_height:   
+                        exit()
+                    
+def exit():
+    save_boards(board.MUST_ATTACK)
+    pygame.quit()
+    sys.exit()
 
 def main():
     load_boards(board.MUST_ATTACK)
@@ -89,6 +127,10 @@ def main():
             before = time.time()
 
             move = make_move(board, RED, ALGORITHM_DEPTH)
+            
+            if move == None:
+                end_game('YOU WIN')
+
             board.move_piece([move[1]], move[0][1], move[0][0], move[1][1], move[1][0])
 
             times.append(time.time()-before)
@@ -98,9 +140,7 @@ def main():
         while not player_made_move and player_turn==BLACK: 
             
             if len(board.get_pieces_movement_algo(BLACK))==0: 
-                save_boards(board.MUST_ATTACK)
-                pygame.quit()
-                sys.exit()
+                end_game('GAME OVER')
 
             for event in pygame.event.get():
                 if event.type==pygame.MOUSEBUTTONDOWN:
@@ -118,10 +158,8 @@ def main():
                     while waiting:
                         for event_waiting in pygame.event.get():
 
-                            if event_waiting.type == pygame.QUIT:
-                                save_boards(board.MUST_ATTACK)
-                                pygame.quit()
-                                sys.exit()
+                            if event_waiting.type == pygame.QUIT: exit()
+
 
                             if event_waiting.type == pygame.MOUSEBUTTONDOWN:
                                 move_pos_col, move_pos_row = pygame.mouse.get_pos()[0]//SQUARE_SIZE, pygame.mouse.get_pos()[1]//SQUARE_SIZE
@@ -139,19 +177,22 @@ def main():
 
             update_display(player_turn)
 
-        if board.black_pieces_left==0 or board.red_pieces_left==0:
-           print(sum(times)/len(times))
-           save_boards(board.MUST_ATTACK)
+        if board.black_pieces_left == 0:
+            end_game('GAME OVER')
 
-           pygame.quit()
-           sys.exit()
+        if board.red_pieces_left == 0:
+            end_game('YOU WIN')
+
+        #if board.black_pieces_left==0 or board.red_pieces_left==0:
+        #   print(sum(times)/len(times))
+        #   exit()
+
 
         if player_turn==BLACK: player_turn=RED
         else: player_turn=BLACK
 
-    save_boards(board.MUST_ATTACK)
-    pygame.quit()
-    sys.exit()
+    exit()
+
 
 
 if __name__ == '__main__':
