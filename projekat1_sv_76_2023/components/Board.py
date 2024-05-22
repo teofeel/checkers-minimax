@@ -415,11 +415,11 @@ class Board:
             if((not self.out_of_bounds(possible_move_row, possible_move_col)) and self._board[possible_move_row][possible_move_col]==0 
                and (possible_move_row==move_row and possible_move_col==move_col)):
                 
-                removed = False
+               # removed = False
 
                 if abs(move_row-piece_row)==2:
                     self.remove_piece(self._board[piece_row][piece_col], move_col, move_row)
-                    removed = True
+                    #removed = True
                 
                 self._board[move_row][move_col] = self._board[piece_row][piece_col]
                 self._board[move_row][move_col].column = move_col
@@ -427,20 +427,20 @@ class Board:
 
                 self._board[piece_row][piece_col] = 0
 
-                while removed and self._MUST_ATTACK:
-                    new_possible_moves = self.selected_piece(move_col, move_row, self._board[move_row][move_col].color, 
-                                                             self.get_pieces_attack_position(self._board[move_row][move_col].color))
+                #while removed and self._MUST_ATTACK:
+                 #   new_possible_moves = self.selected_piece(move_col, move_row, self._board[move_row][move_col].color, 
+                  #                                           self.get_pieces_attack_position(self._board[move_row][move_col].color))
                     
-                    if len(new_possible_moves)>0:
-                        move_row1, move_col1 = self.multiple_jumps(new_possible_moves, move_row, move_col)
+                   # if len(new_possible_moves)>0:
+                    #    move_row1, move_col1 = self.multiple_jumps(new_possible_moves, move_row, move_col)
 
-                        if move_row1==move_row and move_col1==move_col:
-                            removed = False
-                        else: 
-                            move_row = move_row1
-                            move_col = move_col1
+                    #    if move_row1==move_row and move_col1==move_col:
+                     #       removed = False
+                      #  else: 
+                       #     move_row = move_row1
+                        #    move_col = move_col1
                         
-                    removed = False
+                    #removed = False
 
 
                 if(self._board[move_row][move_col].color == BLACK and move_row==0):

@@ -21,6 +21,18 @@ def heuristic(board):
     WALL_WEIGHT = -0.5
     
 
+    
+    #BASIC_PIECE_SCORE = 50
+    #if not board.MUST_ATTACK:
+     #   BASIC_PIECE_SCORE = 75
+
+    #ADVANCED_PIECE_SCORE = 15
+    #QUEEN_WEIGHT = 15
+    #ATTACK_WEIGHT = 15
+    #CAN_BE_CAPTURED_WEIGHT = -45
+    #CORNER_WEIGHT = -1
+    #WALL_WEIGHT = -0.5
+
     black_basic_score           = board.black_pieces_left                       * BASIC_PIECE_SCORE
     black_advanced_piece_score  = board.get_advanced_pieces(BLACK)              * ADVANCED_PIECE_SCORE
     black_queen_score           = board.black_piece_queens                      * QUEEN_WEIGHT
@@ -105,7 +117,7 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
             if value >= max_value:
                 max_value=value
 
-                if depth>3:
+                if depth>2:
                     hash_map[max_value] = move_suggest
             
             alpha = max(alpha, value)
