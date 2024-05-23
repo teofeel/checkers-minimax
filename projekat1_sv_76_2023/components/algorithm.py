@@ -134,7 +134,7 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
             if value <= min_value:
                 min_value = value
 
-            beta = min(beta, min_value)
+            beta = min(beta, value)
             if beta <= alpha:
                 break
 
