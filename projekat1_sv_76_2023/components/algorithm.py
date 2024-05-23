@@ -112,7 +112,6 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
                     hash_map[max_value] = move_suggest
             
             alpha = max(alpha, value)
-
             if beta <= alpha:
                 break
 
