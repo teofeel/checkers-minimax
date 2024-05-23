@@ -30,7 +30,6 @@ class HashMap:
                 
         return None
 
-
     def __setitem__(self, key, value):
         hashed_key = self._hash(key)
 
@@ -58,22 +57,12 @@ class HashMap:
                 
         return False
     
-
     def __iter__(self):
         for bucket in self._data:
             for item in bucket:
                 yield item
 
-    #def __next__(self):
-    #    if self.data_index >= self._capacity:
-    #        raise StopIteration
-    #    
-    #    if self.bucket_index >= len(self._data[self.data_index]):
-    #        self.data_index += 1
-    #        self.bucket_index += 1
-    #        return self.__next__()
-    #    
-    #    value = self.data[self.data_index][self.bucket_index]
-    #    self.bucket_index += 1
-    #    return value
+    def __len__(self):
+        return len(self._data)
+
     
