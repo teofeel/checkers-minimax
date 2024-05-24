@@ -141,8 +141,13 @@ def make_move(board, player, depth):
     hash_map = HashMap()
 
     num_of_pieces = board.red_pieces_left + board.black_pieces_left
-    if num_of_pieces <7:
+
+    if num_of_pieces < 8:
         depth = 5
+
+    if num_of_pieces < 5:
+        depth = 6
+
 
     if str(board) in boards and boards[str(board)]!=None:
         return boards[str(board)]
