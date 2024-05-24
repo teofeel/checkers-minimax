@@ -63,19 +63,17 @@ def load_boards(must_attack):
     global boards
 
     if must_attack:
-
-        if os.stat('must_attack_boards.txt').st_size==0:
+        try:
+            with open('must_attack_boards.txt','r') as file:
+                extract_data(file)
+        except:
             return
-        
-        with open('must_attack_boards.txt','r') as file:
-            extract_data(file)
     else:
-        if os.stat('boards.txt').st_size==0:
-            return
-        
-        with open('boards.txt','r') as file:
-            extract_data(file)
-            
+        try:
+            with open('boards.txt','r') as file:
+                extract_data(file)
+        except:
+            return    
 
 def save_boards(must_attack):
     if must_attack:
@@ -108,14 +106,13 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
             if value >= max_value:
                 max_value=value
 
-                if depth>2:
+                if depth>3:
                     hash_map[max_value] = move_suggest
             
             alpha = max(alpha, value)
             if beta <= alpha:
                 break
-
-
+            
         return max_value 
 
     else:
@@ -143,6 +140,10 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
 def make_move(board, player, depth):
     hash_map = HashMap()
 
+    num_of_pieces = board.red_pieces_left + board.black_pieces_left
+    if num_of_pieces <7:
+        depth = 5
+
     if str(board) in boards and boards[str(board)]!=None:
         return boards[str(board)]
 
@@ -150,7 +151,7 @@ def make_move(board, player, depth):
     
     move_value = minimax(board_temp, depth, player, float('-inf'), float('inf'), hash_map)
 
-    if board.red_pieces_left + board.black_pieces_left>7 and hash_map[move_value]!=None:
+    if num_of_pieces>7 and hash_map[move_value]!=None:
         boards[str(board)] = hash_map[move_value]
 
     return hash_map[move_value]

@@ -65,8 +65,6 @@ def update_display(color):
     board.draw_pieces_board(WINDOW)
     pygame.display.update()
 
-def show_next_player():
-    pass
 
 
 def end_game(value):
