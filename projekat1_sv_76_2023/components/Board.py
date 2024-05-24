@@ -96,9 +96,9 @@ class Board:
             for column in range(COLS):
                 if column % 2 == (row+1)%2:
                     if row<3:
-                        self._board[row].append(Piece(row,column,RED))
+                        self._board[row].append(Piece(row,column,RED, BURGUNDY))
                     elif row>4:
-                        self._board[row].append(Piece(row,column,BLACK))
+                        self._board[row].append(Piece(row,column,BLACK, GREY))
                     else:
                         self._board[row].append(0)
                 else:

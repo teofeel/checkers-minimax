@@ -2,13 +2,14 @@ from .constants import *
 import pygame
 
 class Piece:
-    def __init__(self, row, column, color):
+    def __init__(self, row, column, color, queen_color):
         self.x=0
         self.y=0
         self.row = row
         self.column = column
         self.color = color
         self.is_queen = False
+        self.queen_color = queen_color
 
         if self.color == BLACK:
             self.direction = -1
@@ -27,7 +28,10 @@ class Piece:
 
     def draw_circle(self,window):
         self.position()
-        pygame.draw.circle(window, self.color, (self.x,self.y), SQUARE_SIZE//2-10)
+        if not self.is_queen:
+            pygame.draw.circle(window, self.color, (self.x,self.y), SQUARE_SIZE//2-10)
+        else:
+            pygame.draw.circle(window, self.queen_color, (self.x,self.y), SQUARE_SIZE//2-10)
 
     def draw_suggested(self, window):
         self.position()
