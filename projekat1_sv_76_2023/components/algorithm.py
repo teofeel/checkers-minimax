@@ -138,7 +138,7 @@ def minimax(board, depth, maximizer, alpha, beta, hash_map):
 
 
 def make_move(board, player, depth):
-    hash_map = HashMap()
+    hash_map = {}
 
     num_of_pieces = board.red_pieces_left + board.black_pieces_left
 
